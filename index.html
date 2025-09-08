@@ -6,13 +6,11 @@
   </head>
   <body>
 <div class="app-container">
-        <!-- Mobile Header -->
         <header class="mobile-header">
             <h1>💰 Expense-Tracker </h1>
             <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
         </header>
 
-        <!-- Sidebar Navigation -->
         <nav class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <h2 class="sidebar-title">💰 Expense-Tracker</h2>
@@ -64,12 +62,9 @@
             </ul>
         </nav>
 
-        <!-- Overlay for mobile -->
         <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
-        <!-- Main Content -->
         <main class="main-content">
-            <!-- Dashboard Section -->
             <section class="content-section active" id="dashboard">
                 <div class="dashboard-grid">
                     <div class="stats-card">
@@ -96,60 +91,26 @@
 
                 <div class="section-card">
                     <h2 class="section-title">Quick Add Transaction</h2>
-                    <form id="quick-form">
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label>Description</label>
-                                <input type="text" class="form-input" id="quick-description" placeholder="Enter description..." required>
-                            </div>
-                            <div class="form-group">
-                                <label>Amount</label>
-                                <input type="number" class="form-input" id="quick-amount" placeholder="0.00" step="0.01" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Category</label>
-                                <select class="form-select" id="quick-category" required>
-                                    <option value="">Select category...</option>
-                                    <option value="food">🍕 Food & Dining</option>
-                                    <option value="transport">🚗 Transportation</option>
-                                    <option value="entertainment">🎬 Entertainment</option>
-                                    <option value="bills">💡 Bills & Utilities</option>
-                                    <option value="shopping">🛍️ Shopping</option>
-                                    <option value="health">🏥 Healthcare</option>
-                                    <option value="education">📚 Education</option>
-                                    <option value="salary">💼 Salary</option>
-                                    <option value="freelance">💻 Freelance</option>
-                                    <option value="investment">📈 Investment</option>
-                                    <option value="other">📦 Other</option>
-                                </select>
-                            </div>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Description</label>
+                            <input type="text" class="form-input" id="text" placeholder="Enter item">
                         </div>
-                        <div class="radio-group" style="margin: 1rem 0;">
-                            <div class="radio-option selected" id="expense-option">
-                                <input type="radio" name="type" value="expense" checked>
-                                <span>💸 Expense</span>
-                            </div>
-                            <div class="radio-option" id="income-option">
-                                <input type="radio" name="type" value="income">
-                                <span>💰 Income</span>
-                            </div>
+                        <div class="form-group">
+                            <label>Amount</label>
+                            <input type="number" class="form-input" id="amount" placeholder="Enter amount">
                         </div>
-                        <button type="submit" class="btn btn-primary btn-full">Add Transaction</button>
-                    </form>
+                    </div>
+                    <button class="btn btn-primary btn-full" id="addBtn">Add Transaction</button>
                 </div>
 
                 <div class="section-card">
                     <h2 class="section-title">Recent Transactions</h2>
-                    <div id="recent-transactions">
-                        <div style="text-align: center; padding: 2rem; color: rgba(255, 255, 255, 0.7);">
-                            <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
-                            <p>No transactions yet. Add your first transaction above!</p>
-                        </div>
-                    </div>
+                    <ul id="list"></ul>
                 </div>
             </section>
 
-            <!-- Transactions Section -->
             <section class="content-section" id="transactions">
                 <div class="section-card">
                     <h2 class="section-title">All Transactions</h2>
@@ -204,7 +165,6 @@
                 </div>
             </section>
 
-            <!-- Budget Section -->
             <section class="content-section" id="budget">
                 <div class="section-card">
                     <h2 class="section-title">Budget Planner</h2>
@@ -234,7 +194,6 @@
                 </div>
             </section>
 
-            <!-- Analytics Section -->
             <section class="content-section" id="analytics">
                 <div class="section-card">
                     <h2 class="section-title">Financial Analytics</h2>
@@ -270,7 +229,6 @@
                 </div>
             </section>
 
-            <!-- Categories Section -->
             <section class="content-section" id="categories">
                 <div class="section-card">
                     <h2 class="section-title">Manage Categories</h2>
@@ -291,7 +249,6 @@
                 </div>
             </section>
 
-            <!-- Reports Section -->
             <section class="content-section" id="reports">
                 <div class="section-card">
                     <h2 class="section-title">Financial Reports</h2>
@@ -325,7 +282,6 @@
                 </div>
             </section>
 
-            <!-- Settings Section -->
             <section class="content-section" id="settings">
                 <div class="section-card">
                     <h2 class="section-title">App Settings</h2>
@@ -403,6 +359,36 @@
             </section>
         </main>
     </div>
-    <script src="script.js"></script>
-  </body>
+<script type="module">
+import { addTransaction, getTransactions } from './script.js'
+
+const textInput = document.getElementById('text')
+const amountInput = document.getElementById('amount')
+const list = document.getElementById('list')
+const addBtn = document.getElementById('addBtn')
+
+addBtn.addEventListener('click', async () => {
+  const text = textInput.value
+  const amount = parseInt(amountInput.value)
+  if(!text || !amount) return alert("Enter valid data")
+  
+  await addTransaction(text, amount)
+  textInput.value = ""
+  amountInput.value = ""
+  displayTransactions()
+})
+
+async function displayTransactions() {
+  const transactions = await getTransactions()
+  list.innerHTML = ""
+  transactions.forEach(tran => {
+    const li = document.createElement('li')
+    li.textContent = `${tran.text}: ${tran.amount}`
+    list.appendChild(li)
+  })
+}
+
+displayTransactions()
+</script>
+</body>
 </html>
