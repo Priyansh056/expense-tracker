@@ -1,37 +1,3 @@
-import { supabase } from './config.js'
-
-// Transaction add करने का function
-export async function addTransaction(text, amount) {
-  const { data, error } = await supabase
-    .from('transactions') // Supabase में table name
-    .insert([{ text, amount }])
-
-  if (error) {
-    console.error("Error adding transaction:", error)
-  } else {
-    console.log("Transaction added:", data)
-  }
-}
-
-// सभी transactions fetch करने का function
-export async function getTransactions() {
-  const { data, error } = await supabase
-    .from('transactions')
-    .select('*')
-    .order('created_at', { ascending: false })
-
-  if (error) {
-    console.error("Error fetching transactions:", error)
-    return []
-  }
-  return data
-}
-
-// Example Usage:
-// addTransaction("Lunch", -200)
-// getTransactions().then(data => console.log(data))
-
-
 // Application State
 let transactions = [];
 let budgets = {};
