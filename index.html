@@ -1,52 +1,398 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expense Tracker</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <h2>Expense Tracker 📊</h2>
-    <div class="container">
-        <h4>Your Balance</h4>
-        <h1 id="balance">₹0.00</h1>
+<div class="app-container">
+        <!-- Mobile Header -->
+        <header class="mobile-header">
+            <h1>💰 ExpenseFlow Pro</h1>
+            <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+        </header>
 
-        <div class="inc-exp-container">
-            <div>
-                <h4>Income</h4>
-                <p id="money-plus" class="money plus">+₹0.00</p>
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">💰 ExpenseFlow</h2>
+                <p class="sidebar-subtitle">Pro Edition</p>
             </div>
-            <div>
-                <h4>Expense</h4>
-                <p id="money-minus" class="money minus">-₹0.00</p>
-            </div>
-        </div>
-
-        <h3>History</h3>
-        <ul id="list" class="list">
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active" onclick="showSection('dashboard')">
+                        <span class="nav-icon">📊</span>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showSection('transactions')">
+                        <span class="nav-icon">💳</span>
+                        Transactions
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showSection('budget')">
+                        <span class="nav-icon">🎯</span>
+                        Budget Planner
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showSection('analytics')">
+                        <span class="nav-icon">📈</span>
+                        Analytics
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showSection('categories')">
+                        <span class="nav-icon">🏷️</span>
+                        Categories
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showSection('reports')">
+                        <span class="nav-icon">📋</span>
+                        Reports
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showSection('settings')">
+                        <span class="nav-icon">⚙️</span>
+                        Settings
+                    </a>
+                </li>
             </ul>
+        </nav>
 
-        <h3>Add New Transaction</h3>
-        <form id="form">
-            <div class="form-control">
-                <label for="text">Description</label>
-                <input type="text" id="text" placeholder="Enter description..." />
-            </div>
-            <div class="form-control">
-                <label for="amount">Amount</label>
-                <input type="number" id="amount" placeholder="Enter amount..." />
-            </div>
-            <div class="form-control radio-container">
-                <input type="radio" id="income" name="transaction-type" value="income" checked>
-                <label for="income">Income</label>
-                <input type="radio" id="expense" name="transaction-type" value="expense">
-                <label for="expense">Expense</label>
-            </div>
-            <button class="btn">Add Transaction</button>
-        </form>
+        <!-- Overlay for mobile -->
+        <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Section -->
+            <section class="content-section active" id="dashboard">
+                <div class="dashboard-grid">
+                    <div class="stats-card">
+                        <div class="stats-icon">💰</div>
+                        <div class="stats-label">Total Balance</div>
+                        <div class="stats-value" id="total-balance">$0.00</div>
+                    </div>
+                    <div class="stats-card">
+                        <div class="stats-icon">📈</div>
+                        <div class="stats-label">Total Income</div>
+                        <div class="stats-value" id="total-income" style="color: #4facfe;">+$0.00</div>
+                    </div>
+                    <div class="stats-card">
+                        <div class="stats-icon">📉</div>
+                        <div class="stats-label">Total Expenses</div>
+                        <div class="stats-value" id="total-expenses" style="color: #fa709a;">-$0.00</div>
+                    </div>
+                    <div class="stats-card">
+                        <div class="stats-icon">📊</div>
+                        <div class="stats-label">This Month</div>
+                        <div class="stats-value" id="month-balance">$0.00</div>
+                    </div>
+                </div>
+
+                <div class="section-card">
+                    <h2 class="section-title">Quick Add Transaction</h2>
+                    <form id="quick-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Description</label>
+                                <input type="text" class="form-input" id="quick-description" placeholder="Enter description..." required>
+                            </div>
+                            <div class="form-group">
+                                <label>Amount</label>
+                                <input type="number" class="form-input" id="quick-amount" placeholder="0.00" step="0.01" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Category</label>
+                                <select class="form-select" id="quick-category" required>
+                                    <option value="">Select category...</option>
+                                    <option value="food">🍕 Food & Dining</option>
+                                    <option value="transport">🚗 Transportation</option>
+                                    <option value="entertainment">🎬 Entertainment</option>
+                                    <option value="bills">💡 Bills & Utilities</option>
+                                    <option value="shopping">🛍️ Shopping</option>
+                                    <option value="health">🏥 Healthcare</option>
+                                    <option value="education">📚 Education</option>
+                                    <option value="salary">💼 Salary</option>
+                                    <option value="freelance">💻 Freelance</option>
+                                    <option value="investment">📈 Investment</option>
+                                    <option value="other">📦 Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="radio-group" style="margin: 1rem 0;">
+                            <div class="radio-option selected" id="expense-option">
+                                <input type="radio" name="type" value="expense" checked>
+                                <span>💸 Expense</span>
+                            </div>
+                            <div class="radio-option" id="income-option">
+                                <input type="radio" name="type" value="income">
+                                <span>💰 Income</span>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">Add Transaction</button>
+                    </form>
+                </div>
+
+                <div class="section-card">
+                    <h2 class="section-title">Recent Transactions</h2>
+                    <div id="recent-transactions">
+                        <div style="text-align: center; padding: 2rem; color: rgba(255, 255, 255, 0.7);">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
+                            <p>No transactions yet. Add your first transaction above!</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Transactions Section -->
+            <section class="content-section" id="transactions">
+                <div class="section-card">
+                    <h2 class="section-title">All Transactions</h2>
+                    
+                    <div class="search-container">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" class="search-input" id="search-transactions" placeholder="Search transactions...">
+                    </div>
+
+                    <div class="filters">
+                        <div class="filter-group">
+                            <label style="color: rgba(255, 255, 255, 0.8); margin-right: 0.5rem;">Filter:</label>
+                            <select class="form-select" id="filter-type" style="width: auto;">
+                                <option value="all">All Types</option>
+                                <option value="income">Income Only</option>
+                                <option value="expense">Expenses Only</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <select class="form-select" id="filter-category" style="width: auto;">
+                                <option value="all">All Categories</option>
+                                <option value="food">Food & Dining</option>
+                                <option value="transport">Transportation</option>
+                                <option value="entertainment">Entertainment</option>
+                                <option value="bills">Bills & Utilities</option>
+                                <option value="shopping">Shopping</option>
+                                <option value="health">Healthcare</option>
+                                <option value="education">Education</option>
+                                <option value="salary">Salary</option>
+                                <option value="freelance">Freelance</option>
+                                <option value="investment">Investment</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <select class="form-select" id="sort-transactions" style="width: auto;">
+                                <option value="newest">Newest First</option>
+                                <option value="oldest">Oldest First</option>
+                                <option value="highest">Highest Amount</option>
+                                <option value="lowest">Lowest Amount</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="all-transactions"></div>
+
+                    <div class="export-options">
+                        <button class="btn btn-success" onclick="exportTransactions('csv')">📊 Export CSV</button>
+                        <button class="btn btn-primary" onclick="exportTransactions('json')">📄 Export JSON</button>
+                        <button class="btn btn-danger" onclick="clearAllData()">🗑️ Clear All</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Budget Section -->
+            <section class="content-section" id="budget">
+                <div class="section-card">
+                    <h2 class="section-title">Budget Planner</h2>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select class="form-select" id="budget-category">
+                                <option value="food">🍕 Food & Dining</option>
+                                <option value="transport">🚗 Transportation</option>
+                                <option value="entertainment">🎬 Entertainment</option>
+                                <option value="bills">💡 Bills & Utilities</option>
+                                <option value="shopping">🛍️ Shopping</option>
+                                <option value="health">🏥 Healthcare</option>
+                                <option value="education">📚 Education</option>
+                                <option value="other">📦 Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Monthly Budget</label>
+                            <input type="number" class="form-input" id="budget-amount" placeholder="Enter budget amount..." step="0.01">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-full" onclick="setBudget()">Set Budget</button>
+
+                    <div id="budget-display"></div>
+                </div>
+            </section>
+
+            <!-- Analytics Section -->
+            <section class="content-section" id="analytics">
+                <div class="section-card">
+                    <h2 class="section-title">Financial Analytics</h2>
+                    
+                    <div class="dashboard-grid" style="margin-bottom: 2rem;">
+                        <div class="stats-card">
+                            <div class="stats-icon">📅</div>
+                            <div class="stats-label">This Week</div>
+                            <div class="stats-value" id="week-total">$0.00</div>
+                        </div>
+                        <div class="stats-card">
+                            <div class="stats-icon">🗓️</div>
+                            <div class="stats-label">This Month</div>
+                            <div class="stats-value" id="month-total">$0.00</div>
+                        </div>
+                        <div class="stats-card">
+                            <div class="stats-icon">📈</div>
+                            <div class="stats-label">Average Daily</div>
+                            <div class="stats-value" id="daily-average">$0.00</div>
+                        </div>
+                        <div class="stats-card">
+                            <div class="stats-icon">🎯</div>
+                            <div class="stats-label">Top Category</div>
+                            <div class="stats-value" id="top-category">None</div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="expenseChart" width="400" height="200"></canvas>
+                    </div>
+
+                    <div id="category-breakdown"></div>
+                </div>
+            </section>
+
+            <!-- Categories Section -->
+            <section class="content-section" id="categories">
+                <div class="section-card">
+                    <h2 class="section-title">Manage Categories</h2>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Category Name</label>
+                            <input type="text" class="form-input" id="new-category-name" placeholder="Enter category name...">
+                        </div>
+                        <div class="form-group">
+                            <label>Category Icon</label>
+                            <input type="text" class="form-input" id="new-category-icon" placeholder="Enter emoji (🍕)...">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-full" onclick="addCategory()">Add Category</button>
+
+                    <div id="categories-list"></div>
+                </div>
+            </section>
+
+            <!-- Reports Section -->
+            <section class="content-section" id="reports">
+                <div class="section-card">
+                    <h2 class="section-title">Financial Reports</h2>
+                    
+                    <div class="filters" style="justify-content: center; margin-bottom: 2rem;">
+                        <div class="filter-group">
+                            <label style="color: rgba(255, 255, 255, 0.8); margin-right: 0.5rem;">Period:</label>
+                            <select class="form-select" id="report-period" style="width: auto;">
+                                <option value="week">This Week</option>
+                                <option value="month" selected>This Month</option>
+                                <option value="quarter">This Quarter</option>
+                                <option value="year">This Year</option>
+                                <option value="all">All Time</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="generateReport()">Generate Report</button>
+                    </div>
+
+                    <div id="report-content">
+                        <div style="text-align: center; padding: 3rem; color: rgba(255, 255, 255, 0.7);">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
+                            <p>Click "Generate Report" to view your financial summary</p>
+                        </div>
+                    </div>
+
+                    <div class="export-options">
+                        <button class="btn btn-success" onclick="exportReport('pdf')">📄 Export PDF</button>
+                        <button class="btn btn-primary" onclick="exportReport('excel')">📊 Export Excel</button>
+                        <button class="btn btn-danger" onclick="printReport()">🖨️ Print Report</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section class="content-section" id="settings">
+                <div class="section-card">
+                    <h2 class="section-title">App Settings</h2>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Currency</label>
+                            <select class="form-select" id="currency-setting">
+                                <option value="USD">💵 USD - Dollar</option>
+                                <option value="EUR">💶 EUR - Euro</option>
+                                <option value="GBP">💷 GBP - Pound</option>
+                                <option value="JPY">💴 JPY - Yen</option>
+                                <option value="INR">💰 INR - Rupee</option>
+                                <option value="CAD">🍁 CAD - Canadian Dollar</option>
+                                <option value="AUD">🦘 AUD - Australian Dollar</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Date Format</label>
+                            <select class="form-select" id="date-format">
+                                <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                                <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                                <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Theme</label>
+                            <select class="form-select" id="theme-setting">
+                                <option value="gradient">🌈 Gradient (Current)</option>
+                                <option value="dark">🌙 Dark Mode</option>
+                                <option value="light">☀️ Light Mode</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Language</label>
+                            <select class="form-select" id="language-setting">
+                                <option value="en">🇺🇸 English</option>
+                                <option value="es">🇪🇸 Español</option>
+                                <option value="fr">🇫🇷 Français</option>
+                                <option value="de">🇩🇪 Deutsch</option>
+                                <option value="hi">🇮🇳 हिंदी</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="margin: 2rem 0;">
+                        <h3 style="color: white; margin-bottom: 1rem;">Notifications</h3>
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <label style="display: flex; align-items: center; gap: 1rem; color: white; cursor: pointer;">
+                                <input type="checkbox" id="budget-alerts" checked>
+                                <span>Budget limit alerts</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 1rem; color: white; cursor: pointer;">
+                                <input type="checkbox" id="daily-reminders" checked>
+                                <span>Daily expense reminders</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 1rem; color: white; cursor: pointer;">
+                                <input type="checkbox" id="weekly-reports">
+                                <span>Weekly financial reports</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary btn-full" onclick="saveSettings()">Save Settings</button>
+
+                    <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.2);">
+                        <h3 style="color: white; margin-bottom: 1rem;">Data Management</h3>
+                        <div class="export-options">
+                            <button class="btn btn-success" onclick="backupData()">💾 Backup Data</button>
+                            <button class="btn btn-primary" onclick="importData()">📂 Import Data</button>
+                            <button class="btn btn-danger" onclick="resetApp()">🔄 Reset App</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
     </div>
-
-    <script src="script.js"></script>
-</body>
-</html>
